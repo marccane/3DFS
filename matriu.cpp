@@ -22,36 +22,10 @@ public: //Moltes operacions maten la caché inecessariament, arreglar. Cntl+f amb
     }
 
     ~matriu(){
-        cout<<"Destructor: "<<this<<" "<<_files<<" x "<<_columnes;
         for(int i=0;i<_columnes;i++){
             delete []_mat[i];
         }
         delete []_mat;
-        cout<<"...Ok"<<endl;
-    }
-
-    matriu& operator=(const matriu &b){
-        if(this!=&b){
-            matriu(_files,_columnes);
-            for(int i=0;i<_files;i++){
-                for(int j=0;j<_columnes;j++){
-                    _mat[j][i]=b._mat[j][i];
-                }
-            }
-        }
-        cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
-        return *this;
-    }
-
-    matriu& copia_i_esborrat(matriu &b){
-        if(this!=&b){
-            _files=b._files;
-            _columnes=b._columnes;
-            _mat=b._mat;
-            b._files=b._columnes=0;
-            b._mat=NULL;
-        }
-        return *this;
     }
 
     //!Pre:longitud(arr)==_files*_columnes
@@ -65,14 +39,12 @@ public: //Moltes operacions maten la caché inecessariament, arreglar. Cntl+f amb
     }
 
     void mostrar(){
-        cout<<"Mostrar: "<<this<<endl;
         for(int i=0;i<_files;i++){
             for(int j=0;j<_columnes;j++){
-                cout<<_mat[j][i]<<" ";
+                cout<<_mat[j][i];
             }
             cout<<endl;
         }
-        cout<<endl;
     }
 
     //si a cada operació hem d'allocatejar memoria no nem bé... hauriem de reaprofitar els objectes allocatejats... podriem fer una pila...
@@ -134,35 +106,32 @@ public: //Moltes operacions maten la caché inecessariament, arreglar. Cntl+f amb
     }
 
     matriu inversa(){
-        float A=determinant_r();
-        if(_files!=_columnes or A==0){ //si no es quadrada o det=0 no podem fer la inv
+        if(_files!=_columnes){ //si no es quadrada no podem fer la inv
             cout<<"No es pot fer la inversa"<<endl;
             return matriu();
         }
-        matriu res(_files,_files), temp(_files-1,_files-1);
-        int tamany=(_files-1)*(_files-1);
-        float *temp_arr=new float[tamany]; //antic candidat a memory leak. Punters explícits = mal
+        float A=determinant_r();
+        matriu res(_files,_files);
         for(int i=0;i<_files;i++){
             for(int j=0;j<_columnes;j++){
-                //creem la minimatriu
-                int pos=0;
-                for(int k=0;k<_files;k++){
-                    if(k!=i){
-                        for(int l=0;l<_columnes;l++){
-                            if(l!=j){
-                                temp_arr[pos++]=_mat[l][k];
+/*
+                int tamany=_files*_columnes;
+                float *temp_arr=new float[tamany]; //antic candidat a memory leak. Punters explícits = mal
+                for(int i=0;i<_files;i++){
+                    int pos=0;
+                    for(int j=0;j<_files;j++){
+                        if(j!=i){
+                            for(int k=0;k<_columnes;k++){
+                                if(k!=col_sel){
+                                    temp_arr[pos++]=_mat[k][j];
+                                }
                             }
                         }
                     }
                 }
-            temp.emplenar(temp_arr);
-            res._mat[j][i]=((i+j)&1?-1:1)*temp.determinant_r(); //podem optimitzar el ternari a bool b=!b començant amb b
+*/
             }
         }
-        delete []temp_arr;
-        res.mostrar();
-        //res=res.producte_escalar(1/A);
-        //res.mostrar();
         return res;
     }
 
@@ -187,88 +156,7 @@ public: //Moltes operacions maten la caché inecessariament, arreglar. Cntl+f amb
         return a-b;
     }
 
-    float determinant_r(){ //mateixes optimitzacions que al determinant_r3plus + masses crides recursives
-        if(_files!=_columnes){ //si no es quadrada no podem fer el det
-            cout<<"No es pot fer el determinant"<<endl;
-            return 0;
-        }
-
-        const int col_sel=0; //!hardcodejat per ara, al deshardcodejar pensar en que el SIGNE del primer de la columna no és sempre +!
-        float res;
-        /*if(_files==1)
-            res=_mat[0][0];*/
-        if(_files==2)
-            res=_mat[0][0]*_mat[1][1]-_mat[0][1]*_mat[1][0];
-        else{
-            res=0;
-            int tamany=_files*_columnes;
-            float *temp_arr=new float[tamany]; //antic candidat a memory leak. Punters explícits = mal
-            for(int i=0;i<_files;i++){
-                int pos=0;
-                for(int j=0;j<_files;j++){
-                    if(j!=i){
-                        for(int k=0;k<_columnes;k++){
-                            if(k!=col_sel){
-                                temp_arr[pos++]=_mat[k][j];
-                            }
-                        }
-                    }
-                }
-                matriu temp_mat(_files-1,_files-1);
-                temp_mat.emplenar(temp_arr);
-                res+=(i&1?-1:1)*_mat[col_sel][i]*temp_mat.determinant_r();
-            }
-            delete []temp_arr;
-        }
-        return res;
-    }
-
-    void set_matriu_translacio(int mida, int dist){}
-    //homotècia
-    //projeccio
-    //simetria
-    void set_matriu_rotacio(int mida, float angle){}
-};
-
-int main()
-{
-    /*float arr[]={5,6,7,8,10,12,20,30,27};
-    matriu test(3,3);
-    test.emplenar(arr);
-    cout << test.determinant_3x3() << endl;*/
-
-    /*float arr[]={2,8,5,6,4,9,12,5,6,3,7,2,9,8,4,6};
-    matriu test(4,4);
-    test.emplenar(arr);
-    cout << test.determinant_r() << endl;
-    cout << test.determinant_r3plus() << endl;*/
-
-    //test per multiplicacio de matrius quadrades i no quadrades
-    matriu a(3,3), b(3,3), c(3,3);
-    float aa[]={1,2,3,4,5,6,7,8,9};
-    float ab[]={6,7,8,9,10,11,12,13,14};
-    float ac[]={8,7,6,2,4,5,3,6,8};
-    a.emplenar(aa);
-    b.emplenar(ab);
-    c.emplenar(ac);
-    a.mostrar();
-    b.mostrar();
-    b=a;
-    b.mostrar();
-    //c.mostrar();
-    //matriu r=a.suma(b);
-    //r.mostrar();
-    //cout<<"Aqui ve la inversa"<<endl;
-    //c.inversa();
-    //a.resta(b).mostrar();
-    //a.producte_lent(b).mostrar();
-    //a.resta(b).mostrar();
-    //matriu res=a.producte_lent(b);
-    //res.mostrar();
-    return 0;
-}
-
-//!Pre: Matriu quadrada de n>=3
+    //!Pre: Matriu quadrada de n>=3
     /*float determinant_r3plus(){ //sense cap tipus d'optimitzacio. possibilitats: buscar files amb 0's, no fer crida recursiva si el nombre del centre de la creu és 0, no crear una nova matriu??(hard), no fer el check files=columnes usant immersió...
         if(_files!=_columnes){ //si no es quadrada no podem fer el det
             cout<<"No es pot fer el determinant"<<endl;
@@ -304,6 +192,41 @@ int main()
         return res;
     }*/
 
+    float determinant_r(){ //mateixes optimitzacions que al determinant_r3plus + masses crides recursives
+        if(_files!=_columnes){ //si no es quadrada no podem fer el det
+            cout<<"No es pot fer el determinant"<<endl;
+            return 0;
+        }
+
+        const int col_sel=0; //!hardcodejat per ara, al deshardcodejar pensar en que el SIGNE del primer de la columna no és sempre +!
+        float res;
+        if(_files==1){
+            res=_mat[0][0];
+        }
+        else{
+            res=0;
+            int tamany=_files*_columnes;
+            float *temp_arr=new float[tamany]; //antic candidat a memory leak. Punters explícits = mal
+            for(int i=0;i<_files;i++){
+                int pos=0;
+                for(int j=0;j<_files;j++){
+                    if(j!=i){
+                        for(int k=0;k<_columnes;k++){
+                            if(k!=col_sel){
+                                temp_arr[pos++]=_mat[k][j];
+                            }
+                        }
+                    }
+                }
+                matriu temp_mat(_files-1,_files-1);
+                temp_mat.emplenar(temp_arr);
+                res+=(i&1?-1:1)*_mat[col_sel][i]*temp_mat.determinant_r();
+            }
+            delete []temp_arr;
+        }
+        return res;
+    }
+
     /*float determinant(){
         if(_files!=_columnes){ //si no es quadrada no podem fer el det
             cout<<"No es pot fer el determinant"<<endl;
@@ -316,3 +239,11 @@ int main()
 
         }
     }*/
+
+    void set_matriu_translacio(int mida, int dist){}
+    //homotècia
+    //projeccio
+    //simetria
+    void set_matriu_rotacio(int mida, float angle){}
+
+};
