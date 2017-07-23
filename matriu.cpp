@@ -5,6 +5,7 @@ matriu::matriu(){
     _mat=NULL;
 }
 
+//!Pre:files i columnes>0
 matriu::matriu(int files, int columnes){
     _files=files; _columnes=columnes;
     _mat=new float*[_columnes];
@@ -24,7 +25,6 @@ matriu::~matriu(){
 
 matriu::matriu(const matriu &b){
     //matriu(b._files,b._columnes); //nope? fa crash
-
     _files=b._files; _columnes=b._columnes;
     _mat=new float*[_columnes];
     for(int i=0;i<_columnes;i++){
@@ -38,15 +38,6 @@ matriu::matriu(const matriu &b){
     }
     cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
 }
-
-/*matriu& matriu::operator=(const matriu &b){
-    if(this!=&b){
-        *this=matriu(b); //sembla que no xuta
-    }
-    //matriu(b); //wtf? error: declaration of 'matriu b' shadows a parameter|
-    //cout<<"Assignacio: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
-    return *this;
-}*/  //eto no va :(
 
 //!Pre:longitud(arr)==_files*_columnes
 void matriu::emplenar(float arr[]){ //NO CHECKS! THAT'S NOT SAFE!
@@ -71,6 +62,7 @@ void matriu::mostrar(){
 
 //si a cada operació hem d'allocatejar memoria no nem bé... hauriem de reaprofitar els objectes allocatejats... podriem fer una pila...
 //perquè sobreescriure la matriu actual no és una opcio oi?
+
 matriu matriu::suma(const matriu &b)const{
     if(_files!=b._files or _columnes!=b._columnes){
         cout<<"No es pot fer la suma"<<endl;
@@ -169,7 +161,7 @@ matriu matriu::transposada(){
     return res;
 }
 
-float matriu::determinant_r(){ //sense cap tipus d'optimitzacio. possibilitats: buscar files amb 0's, no fer crida recursiva si el nombre del centre de la creu és 0, no crear una nova matriu??(hard), no fer el check files=columnes usant immersió...
+float matriu::determinant_r(){ //sense optimitzacio. possibilitats: buscar files amb 0's, no fer crida recursiva si el nombre del centre de la creu és 0, no crear una nova matriu??(hard), no fer el check files=columnes usant immersió...
     if(_files!=_columnes){ //si no es quadrada no podem fer el det
         cout<<"No es pot fer el determinant"<<endl;
         return 0;
@@ -285,6 +277,14 @@ float matriu::determinant_r(){ //sense cap tipus d'optimitzacio. possibilitats: 
 }*/ //useless perquè per moure una matriu l'objecte ha de ser un lvalue i per obtenir l'lvalue hem de fer una copia, que fa que aixo perdi tot el sentit
 //res.moure(res.producte_escalar(1/A)); //f*** els return values son rvalues
 
+/*matriu& matriu::operator=(const matriu &b){
+    if(this!=&b){
+        *this=matriu(b); //sembla que no xuta
+    }
+    //matriu(b); //wtf? error: declaration of 'matriu b' shadows a parameter|
+    //cout<<"Assignacio: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
+    return *this;
+}*/  //eto no va :(
 
 /*matriu::matriu()
 {

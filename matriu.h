@@ -10,13 +10,15 @@ private:
 
 public:
     matriu();
+    //!Pre:files i columnes>0
     matriu(int files, int columnes);
-    ~matriu();
     matriu(const matriu &b);
+    ~matriu();
     //matriu& operator=(const matriu &b);
+
+    void mostrar();
     //!Pre:longitud(arr)==_files*_columnes
     void emplenar(float arr[]);
-    void mostrar();
     matriu suma(const matriu &b)const;
     matriu resta(const matriu &b)const;
     matriu producte_escalar(float f);
@@ -24,11 +26,6 @@ public:
     matriu inversa();
     matriu transposada();
     float determinant_r();
-    void set_matriu_translacio(int mida, int dist);
-    //homotècia
-    //projeccio
-    //simetria
-    void set_matriu_rotacio(int mida, float angle);
 };
 
 #endif // MATRIU_H
