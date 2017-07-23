@@ -149,7 +149,7 @@ matriu matriu::inversa(){
                 }
             }
         temp.emplenar(temp_arr);
-        res._mat[j][i]=((i+j)&1?-1:1)*temp.determinant_r(); //podem optimitzar el ternari a bool b=!b començant amb b fals
+        res._mat[j][i]=((i+j)&1?-1.0f:1.0f)*temp.determinant_r(); //podem optimitzar el ternari a bool b=!b començant amb b fals
         }
     }
     delete []temp_arr;
@@ -160,7 +160,7 @@ matriu matriu::inversa(){
 }
 
 matriu matriu::transposada(){
-    matriu res(_files,_columnes);
+    matriu res(_columnes,_files);
     for(int i=0;i<_files;i++){
         for(int j=0;j<_columnes;j++){
             res._mat[j][i]=_mat[i][j];
