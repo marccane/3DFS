@@ -13,7 +13,7 @@ public:
     matriu(int files, int columnes);
     ~matriu();
     matriu(const matriu &b);
-    //matriu& operator=(const matriu &b);
+    matriu& operator=(const matriu &b);
     //!Pre:longitud(arr)==_files*_columnes
     void emplenar(float arr[]);
     void mostrar();
