@@ -1,4 +1,5 @@
 #include "matriu.h"
+#include <iso646.h>
 
 matriu::matriu(){
     _files=_columnes=0;
@@ -25,28 +26,19 @@ matriu::~matriu(){
 matriu::matriu(const matriu &b){
     //matriu(b._files,b._columnes); //nope? fa crash
 
-    _files=b._files; _columnes=b._columnes;
-    _mat=new float*[_columnes];
-    for(int i=0;i<_columnes;i++){
-        _mat[i]=new float[_files];
-    } //hem de fer delete de lu vell? memory leak?
-
-    for(int i=0;i<_files;i++){
-        for(int j=0;j<_columnes;j++){
-            _mat[j][i]=b._mat[j][i];
-        }
-    }
+	copia(b);
+	mostrar();
     cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
 }
 
-/*matriu& matriu::operator=(const matriu &b){
+matriu& matriu::operator=(const matriu &b){
     if(this!=&b){
-        *this=matriu(b); //sembla que no xuta
+		copia(b);
     }
     //matriu(b); //wtf? error: declaration of 'matriu b' shadows a parameter|
     //cout<<"Assignacio: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
     return *this;
-}*/  //eto no va :(
+}
 
 //!Pre:longitud(arr)==_files*_columnes
 void matriu::emplenar(float arr[]){ //NO CHECKS! THAT'S NOT SAFE!
@@ -211,6 +203,20 @@ float matriu::determinant_r(){ //sense cap tipus d'optimitzacio. possibilitats: 
         delete []temp_arr;
     }
     return res;
+}
+
+void matriu::copia(const matriu& b) {
+	_files = b._files; _columnes = b._columnes;
+	_mat = new float*[_columnes];
+	for (int i = 0; i<_columnes; i++) {
+		_mat[i] = new float[_files];
+	} //hem de fer delete de lu vell? memory leak?
+
+	for (int i = 0; i<_files; i++) {
+		for (int j = 0; j<_columnes; j++) {
+			_mat[j][i] = b._mat[j][i];
+		}
+	}
 }
 
 //!Pre: Matriu quadrada de n>=3
