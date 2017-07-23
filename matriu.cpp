@@ -26,24 +26,14 @@ matriu::~matriu(){
 matriu::matriu(const matriu &b){
     //matriu(b._files,b._columnes); //nope? fa crash
 
-    _files=b._files; _columnes=b._columnes;
-    _mat=new float*[_columnes];
-    for(int i=0;i<_columnes;i++){
-        _mat[i]=new float[_files];
-    } //hem de fer delete de lu vell? memory leak?
-
-    for(int i=0;i<_files;i++){
-        for(int j=0;j<_columnes;j++){
-            _mat[j][i]=b._mat[j][i];
-        }
-    }
+	copia(b);
+	mostrar();
     cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
 }
 
 matriu& matriu::operator=(const matriu &b){
     if(this!=&b){
-        matriu temp(b); //sembla que no xuta
-		return std::move(temp);
+		copia(b);
     }
     //matriu(b); //wtf? error: declaration of 'matriu b' shadows a parameter|
     //cout<<"Assignacio: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
@@ -213,6 +203,20 @@ float matriu::determinant_r(){ //sense cap tipus d'optimitzacio. possibilitats: 
         delete []temp_arr;
     }
     return res;
+}
+
+void matriu::copia(const matriu& b) {
+	_files = b._files; _columnes = b._columnes;
+	_mat = new float*[_columnes];
+	for (int i = 0; i<_columnes; i++) {
+		_mat[i] = new float[_files];
+	} //hem de fer delete de lu vell? memory leak?
+
+	for (int i = 0; i<_files; i++) {
+		for (int j = 0; j<_columnes; j++) {
+			_mat[j][i] = b._mat[j][i];
+		}
+	}
 }
 
 //!Pre: Matriu quadrada de n>=3

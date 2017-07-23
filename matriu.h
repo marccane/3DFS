@@ -29,6 +29,7 @@ public:
     //projeccio
     //simetria
     void set_matriu_rotacio(int mida, float angle);
+	void copia(const matriu &b);
 };
 
 #endif // MATRIU_H
