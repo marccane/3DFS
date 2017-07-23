@@ -1,4 +1,5 @@
 #include "matriu.h"
+#include <iso646.h>
 
 matriu::matriu(){
     _files=_columnes=0;
@@ -39,14 +40,15 @@ matriu::matriu(const matriu &b){
     cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
 }
 
-/*matriu& matriu::operator=(const matriu &b){
+matriu& matriu::operator=(const matriu &b){
     if(this!=&b){
-        *this=matriu(b); //sembla que no xuta
+        matriu temp(b); //sembla que no xuta
+		return std::move(temp);
     }
     //matriu(b); //wtf? error: declaration of 'matriu b' shadows a parameter|
     //cout<<"Assignacio: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
     return *this;
-}*/  //eto no va :(
+}
 
 //!Pre:longitud(arr)==_files*_columnes
 void matriu::emplenar(float arr[]){ //NO CHECKS! THAT'S NOT SAFE!
