@@ -2,6 +2,12 @@
 1500676955 source:c:\users\markus\tempc\3dfs\main.cpp
 	<iostream>
 
-1500760237 source:c:\users\markus\documents\github\3dfs\main.cpp
+1500835058 source:c:\users\markus\documents\github\3dfs\main.cpp
+	"matriu.h"
+
+1500835791 c:\users\markus\documents\github\3dfs\matriu.h
 	<iostream>
+
+1500837060 source:c:\users\markus\documents\github\3dfs\matriu.cpp
+	"matriu.h"
 
