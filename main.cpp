@@ -156,7 +156,7 @@ public: //Moltes operacions maten la caché inecessariament, arreglar. Cntl+f amb
                     }
                 }
             temp.emplenar(temp_arr);
-            res._mat[j][i]=((i+j)&1?-1:1)*temp.determinant_r(); //podem optimitzar el ternari a bool b=!b començant amb b
+            res._mat[j][i]=((i+j)&1?-1:1)*temp.determinant_r(); //podem optimitzar el ternari a bool b=!b començant amb b fals
             }
         }
         delete []temp_arr;
@@ -253,9 +253,9 @@ int main()
     c.emplenar(ac);
     a.mostrar();
     b.mostrar();
-    b=a;
-    b.mostrar();
-    //c.mostrar();
+    c.mostrar();
+    a.suma(b).mostrar();
+    //c.inversa();
     //matriu r=a.suma(b);
     //r.mostrar();
     //cout<<"Aqui ve la inversa"<<endl;
