@@ -3,6 +3,13 @@
 #include <iostream>
 using namespace std;
 
+const float TAMANY_HORIT=80, TAMANY_VERT=20;
+
+struct min_max_xy{
+    float minx, miny, maxx, maxy;
+};
+
+//!Invariant: _files i _columnes>0
 class matriu{
 private:
     int _files, _columnes;
@@ -11,13 +18,14 @@ private:
 public:
     matriu();
     //!Pre:files i columnes>0
-    matriu(int files, int columnes);
+    matriu(int files, int columnes, float *arr=NULL);
     matriu(const matriu &b);
+    matriu& operator=(const matriu &b);
+    matriu& operator*();
+    void copia(const matriu &b);
     ~matriu();
-    //matriu& operator=(const matriu &b);
 
     void mostrar();
-    matriu& operator=(const matriu &b);
     //!Pre:longitud(arr)==_files*_columnes
     void emplenar(float arr[]);
     matriu suma(const matriu &b)const;
@@ -27,12 +35,14 @@ public:
     matriu inversa();
     matriu transposada();
     float determinant_r();
-    void set_matriu_translacio(int mida, int dist);
+    min_max_xy minmaxxy();
+    void preparar_matriu(min_max_xy m);
+    void escriure_fb(char fb[][(int)TAMANY_VERT]);
+    //void set_matriu_translacio(int mida, int dist);
     //homotècia
     //projeccio
     //simetria
-    void set_matriu_rotacio(int mida, float angle);
-	void copia(const matriu &b);
+    //void set_matriu_rotacio(int mida, float angle);
 };
 
 #endif // MATRIU_H

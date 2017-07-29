@@ -7,11 +7,19 @@ matriu::matriu(){
 }
 
 //!Pre:files i columnes>0
-matriu::matriu(int files, int columnes){
+matriu::matriu(int files, int columnes, float *arr){
     _files=files; _columnes=columnes;
     _mat=new float*[_columnes];
+
+    //debuk
+    if(_files>10 or _columnes>10)
+        cout<<"WTF dude"<<endl;
+
     for(int i=0;i<_columnes;i++){
         _mat[i]=new float[_files];
+    }
+    if(arr!=NULL){
+        emplenar(arr);
     }
 }
 
@@ -27,7 +35,6 @@ matriu::~matriu(){
 matriu::matriu(const matriu &b){
     //matriu(b._files,b._columnes); //nope? fa crash
 	copia(b);
-	mostrar();
     cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
 }
 
@@ -147,7 +154,6 @@ matriu matriu::inversa(){
     }
     delete []temp_arr;
     //res=res.transposada(); //Ja està transposada!
-    res.mostrar();
     res=res.producte_escalar(1.0f/A);
     return res;
 }
@@ -172,7 +178,7 @@ float matriu::determinant_r(){ //sense optimitzacio. possibilitats: buscar files
     float res;
     if(_files<=3){
         if(_files==3){
-            float a,b,**&m=_mat;
+            float a,b, **&m=_mat /* **m=&_mat */; //perquè no funciona/no és el mateix?
             a=m[0][0]*m[1][1]*m[2][2]+m[0][1]*m[1][2]*m[2][0]+m[1][0]*m[2][1]*m[0][2]; //ho podem reordenar per ajudar la cache?
             b=m[2][0]*m[1][1]*m[0][2]+m[1][2]*m[2][1]*m[0][0]+m[0][1]*m[1][0]*m[2][2];
             res=a-b;
@@ -218,6 +224,55 @@ void matriu::copia(const matriu& b) {
 			_mat[j][i] = b._mat[j][i];
 		}
 	}
+}
+
+min_max_xy matriu::minmaxxy(){ //això no és una operació propia d'una matriu...
+    //potser hauriem de fer alguna comprovació?
+    min_max_xy res;
+    res.minx=res.maxx=_mat[0][0];
+    res.miny=res.maxy=_mat[0][1];
+    for(int i=1;i<_columnes;i++){
+         if(_mat[i][1]>res.maxx)res.maxx=_mat[i][1];
+         if(_mat[i][1]<res.minx)res.minx=_mat[i][1];
+         if(_mat[i][0]>res.maxy)res.maxy=_mat[i][0];
+         if(_mat[i][0]<res.miny)res.miny=_mat[i][0];
+    }
+    return res;
+}
+
+void matriu::preparar_matriu(min_max_xy m){//no pertany a matriu... + modifica la matriu perquè sóc aixi de coherent
+    if(m.minx<0){
+        for(int i=0;i<_columnes;i++)
+            _mat[i][1]-=m.minx;
+        m.maxx-=m.minx;
+        m.minx=0;
+    }
+    if(m.miny<0){
+        for(int i=0;i<_columnes;i++)
+            _mat[i][0]-=m.miny;
+        m.maxy-=m.miny;
+        m.miny=0;
+    }
+    const float /*rang_usable_x=m.maxx-m.minx, rang_usable_y=m.maxy-m.miny,*/
+    multiplicador_x=(TAMANY_HORIT-1)/m.maxx, multiplicador_y=(TAMANY_VERT-1)/m.maxy;
+    for(int i=0;i<_columnes;i++){
+        _mat[i][0]*=multiplicador_y;
+        _mat[i][1]*=multiplicador_x;
+    }
+}
+
+void matriu::escriure_fb(char fb[][(int)TAMANY_VERT]){
+    for(int i=0;i<_columnes;i++){ //per cada punt...
+        //debuk
+        int a=(int)_mat[i][1], b=(int)_mat[i][0];
+        if(a>=TAMANY_HORIT or a<0)
+            cout<<"OOB: a="<<a<<" i= "<<i<<endl;
+        else if(b>=TAMANY_VERT or b<0)
+            cout<<"OOB: b="<<b<<" i= "<<i<<endl;
+        else fb[a][b]='#';
+        //fb[(int)_mat[i][1]][(int)_mat[i][0]]='#'; //festa de out of bounds writes. Realment no ha sigut la meva millor linia de codi
+    }
+
 }
 
 //!Pre: Matriu quadrada de n>=3

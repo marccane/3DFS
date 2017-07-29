@@ -33,6 +33,8 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="main.cpp" />
+		<Unit filename="matriu.cpp" />
+		<Unit filename="matriu.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
