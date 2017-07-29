@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-const float TAMANY_HORIT=80, TAMANY_VERT=20;
+const float TAMANY_HORIT=80, TAMANY_VERT=25;
 
 struct min_max_xy{
     float minx, miny, maxx, maxy;

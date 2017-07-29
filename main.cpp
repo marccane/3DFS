@@ -3,7 +3,7 @@
 #include <cmath>
 
 using namespace std;
-const float PI=3.141592;
+const float PI=3.1415;
 
 void clearscreen()//codirobat per evitar flickers
 {
@@ -39,55 +39,81 @@ void producte_vectorial(float a[], float b[], float c[]){
     for(int i=0;i<3;i++)b[i]=a[i]/modul;
 }*/
 
+void llegir_tractar_entrada(float vista[], bool &sortir){
+    if (GetAsyncKeyState(VK_UP)){
+        vista[0]+=5;
+    }
+    if (GetAsyncKeyState(VK_DOWN)){
+        vista[0]-=5;
+    }
+    if (GetAsyncKeyState(VK_LEFT)){
+        vista[1]+=5;
+    }
+    if (GetAsyncKeyState(VK_RIGHT)){
+        vista[1]-=5;
+    }
+    if (GetAsyncKeyState('S')){
+        sortir=true;
+    }
+    //if (GetAsyncKeyState('X')){}
+}
+
 int main()
 {
-    //char framebuffer[(int)TAMANY_HORIT][(int)TAMANY_VERT];
-    //char framebuffer[80][40]; //temp
-    char framebuffer[(int)TAMANY_HORIT+10][(int)TAMANY_VERT];
-    float vista[]={45.0,45.0},
-    an1[]={ cos(vista[0]*PI/180.0)*sin(vista[1]*PI/180.0),
-            sin(vista[0]*PI/180.0)*sin(vista[1]*PI/180.0),
-            cos(vista[1]*PI/180.0)
-            },
-    av1[]={-an1[1],an1[0],0}, aw1[3]/*, n[3], v[3], w[3]*/;
-    float *n=an1,*v=av1,*w=aw1;
+    char framebuffer[(int)TAMANY_HORIT][(int)TAMANY_VERT];
+    //char framebuffer[(int)TAMANY_HORIT+10][(int)TAMANY_VERT];
+    bool sortir=false;
+    float vista[]={45.0,45.0};
 
-    producte_vectorial(an1,av1,aw1);
-    /*normalitzar_vector(an1,n);
-    normalitzar_vector(av1,v);
-    normalitzar_vector(aw1,w);*/
+    while(!sortir){
 
-    float
-    aM[]={  v[0],w[0],n[0],0,
-            v[1],w[1],n[1],0,
-            v[2],w[2],n[2],0,
-            0,0,0,1
-            },
-    aPxy[]={1,0,0,0,
-            0,1,0,0,
-            0,0,0,0,
-            0,0,0,1
-            },
-    acb[]={ 1,1,1,1,2,2,2,2,
-            1,2,2,1,1,2,2,1,
-            1,1,2,2,1,1,2,2,
-            1,1,1,1,1,1,1,1
-            };
+        llegir_tractar_entrada(vista,sortir);
 
-    matriu Pn, M(4,4,aM), Pxy(4,4,aPxy), cb(4,8,acb), cbp;
-    Pn=M.producte_lent(Pxy).producte_lent(M.inversa());
-    //Pn.mostrar();
-    cbp=Pn.producte_lent(cb);
-    //cbp.mostrar();
-    matriu cpla=M.inversa().producte_lent(cbp);
+        float
+        an1[]={ cos(vista[0]*PI/180.0)*sin(vista[1]*PI/180.0),
+                sin(vista[0]*PI/180.0)*sin(vista[1]*PI/180.0),
+                cos(vista[1]*PI/180.0)
+                },
+        av1[]={-an1[1],an1[0],0}, aw1[3];
+        float *n=an1,*v=av1,*w=aw1;
 
-    //clearscreen();
-    netejar_fb(framebuffer);
-    cpla.preparar_matriu(cpla.minmaxxy());
-    cpla.escriure_fb(framebuffer);
-    //framebuffer[0][0]='A';
-    //framebuffer[TAMANY_HORIT-1][TAMANY_VERT-1]='A';
-    dibuixar_fb(framebuffer);
+        producte_vectorial(an1,av1,aw1);
+        /*normalitzar_vector(an1,n);
+        normalitzar_vector(av1,v);
+        normalitzar_vector(aw1,w);*/
+
+        float
+        aM[]={  v[0],w[0],n[0],0,
+                v[1],w[1],n[1],0,
+                v[2],w[2],n[2],0,
+                0,0,0,1
+                },
+        aPxy[]={1,0,0,0,
+                0,1,0,0,
+                0,0,0,0,
+                0,0,0,1
+                },
+        acb[]={ 1,1,1,1,2,2,2,2,
+                1,2,2,1,1,2,2,1,
+                1,1,2,2,1,1,2,2,
+                1,1,1,1,1,1,1,1
+                };
+
+        matriu Pn, M(4,4,aM), Pxy(4,4,aPxy), cb(4,8,acb), cbp;
+        Pn=M.producte_lent(Pxy).producte_lent(M.inversa());
+        //Pn.mostrar();
+        cbp=Pn.producte_lent(cb);
+        //cbp.mostrar();
+        matriu cpla=M.inversa().producte_lent(cbp);
+
+        clearscreen();
+        netejar_fb(framebuffer);
+        cpla.preparar_matriu(cpla.minmaxxy());
+        cpla.escriure_fb(framebuffer);
+        //framebuffer[0][0]='A';
+        //framebuffer[TAMANY_HORIT-1][TAMANY_VERT-1]='A';
+        dibuixar_fb(framebuffer);
+    }
 
     //char a;cin>>a;
 

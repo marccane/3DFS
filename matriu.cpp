@@ -12,8 +12,8 @@ matriu::matriu(int files, int columnes, float *arr){
     _mat=new float*[_columnes];
 
     //debuk
-    if(_files>10 or _columnes>10)
-        cout<<"WTF dude"<<endl;
+    //if(_files>10 or _columnes>10)
+        //cout<<"WTF dude"<<endl;
 
     for(int i=0;i<_columnes;i++){
         _mat[i]=new float[_files];
@@ -24,18 +24,18 @@ matriu::matriu(int files, int columnes, float *arr){
 }
 
 matriu::~matriu(){
-    cout<<"Destructor: "<<this<<" "<<_files<<" x "<<_columnes;
+    //cout<<"Destructor: "<<this<<" "<<_files<<" x "<<_columnes;
     for(int i=0;i<_columnes;i++){
         delete []_mat[i];
     }
     delete []_mat;
-    cout<<"...Ok"<<endl;
+    //cout<<"...Ok"<<endl;
 }
 
 matriu::matriu(const matriu &b){
     //matriu(b._files,b._columnes); //nope? fa crash
 	copia(b);
-    cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
+    //cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
 }
 
 matriu& matriu::operator=(const matriu &b){
@@ -58,7 +58,7 @@ void matriu::emplenar(float arr[]){ //NO CHECKS! THAT'S NOT SAFE!
 }
 
 void matriu::mostrar(){
-    cout<<"Mostrar: "<<this<<endl;
+    //cout<<"Mostrar: "<<this<<endl;
     for(int i=0;i<_files;i++){
         for(int j=0;j<_columnes;j++){
             cout<<_mat[j][i]<<" ";
