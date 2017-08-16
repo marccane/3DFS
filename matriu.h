@@ -30,13 +30,14 @@ public:
     void emplenar(float arr[]);
     matriu suma(const matriu &b)const;
     matriu resta(const matriu &b)const;
-    matriu producte_escalar(float f);
+    matriu producte(float f);
     matriu producte_lent(const matriu &b)const;
     matriu inversa();
     matriu transposada();
     float determinant_r();
     min_max_xy minmaxxy();
     void preparar_matriu(min_max_xy m);
+    void preparar_matriu2();
     void escriure_fb(char fb[][(int)TAMANY_VERT]);
     //void set_matriu_translacio(int mida, int dist);
     //homotècia

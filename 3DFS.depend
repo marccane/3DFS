@@ -2,15 +2,15 @@
 1500676955 source:c:\users\markus\tempc\3dfs\main.cpp
 	<iostream>
 
-1501326574 source:c:\users\markus\documents\github\3dfs\main.cpp
+1502927547 source:c:\users\markus\documents\github\3dfs\main.cpp
 	"matriu.h"
 	<windows.h>
 	<cmath>
 
-1501326548 c:\users\markus\documents\github\3dfs\matriu.h
+1501794516 c:\users\markus\documents\github\3dfs\matriu.h
 	<iostream>
 
-1501326548 source:c:\users\markus\documents\github\3dfs\matriu.cpp
+1502927465 source:c:\users\markus\documents\github\3dfs\matriu.cpp
 	"matriu.h"
 	<iso646.h>
 

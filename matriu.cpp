@@ -99,11 +99,11 @@ matriu matriu::resta(const matriu &b)const{
     return res;
 }
 
-matriu matriu::producte_escalar(float f){ //es diu aixi?
+matriu matriu::producte(float k){ //es diu aixi?
     matriu res(_files,_columnes);
     for(int i=0;i<_files;i++){
         for(int j=0;j<_columnes;j++){
-            res._mat[j][i]=_mat[j][i]*f;
+            res._mat[j][i]=_mat[j][i]*k;
         }
     }
     return res;
@@ -154,7 +154,7 @@ matriu matriu::inversa(){
     }
     delete []temp_arr;
     //res=res.transposada(); //Ja està transposada!
-    res=res.producte_escalar(1.0f/A);
+    res=res.producte(1.0f/A);
     return res;
 }
 
@@ -212,22 +212,25 @@ float matriu::determinant_r(){ //sense optimitzacio. possibilitats: buscar files
     return res;
 }
 
-void matriu::copia(const matriu& b) {
-	_files = b._files; _columnes = b._columnes;
-	_mat = new float*[_columnes];
-	for (int i = 0; i<_columnes; i++) {
-		_mat[i] = new float[_files];
+void matriu::copia(const matriu& b){
+	_files=b._files; _columnes=b._columnes;
+	_mat=new float*[_columnes];
+	for(int i=0;i<_columnes;i++){
+		_mat[i]=new float[_files];
 	} //hem de fer delete de lu vell? memory leak?
 
-	for (int i = 0; i<_files; i++) {
-		for (int j = 0; j<_columnes; j++) {
-			_mat[j][i] = b._mat[j][i];
+	for(int i=0; i<_files;i++){
+		for(int j=0;j<_columnes;j++){
+			_mat[j][i]=b._mat[j][i];
 		}
 	}
 }
 
 min_max_xy matriu::minmaxxy(){ //això no és una operació propia d'una matriu...
-    //potser hauriem de fer alguna comprovació?
+    if(_files<2 or _columnes<=0){
+        cout<<"Error al calcular minmaxxy"<<endl;
+        return minmaxxy();
+    }
     min_max_xy res;
     res.minx=res.maxx=_mat[0][0];
     res.miny=res.maxy=_mat[0][1];
@@ -253,14 +256,34 @@ void matriu::preparar_matriu(min_max_xy m){//no pertany a matriu... + modifica l
         m.maxy-=m.miny;
         m.miny=0;
     }
-    const float /*rang_usable_x=m.maxx-m.minx, rang_usable_y=m.maxy-m.miny,*/
-    multiplicador_x=(TAMANY_HORIT-1)/m.maxx, multiplicador_y=(TAMANY_VERT-1)/m.maxy;
+    //const float /*rang_usable_x=m.maxx-m.minx, rang_usable_y=m.maxy-m.miny,*/
+    /*multiplicador_x=(TAMANY_HORIT-1)/m.maxx, multiplicador_y=(TAMANY_VERT-1)/m.maxy;
     for(int i=0;i<_columnes;i++){
         _mat[i][0]*=multiplicador_y;
         _mat[i][1]*=multiplicador_x;
+    }*/
+    /*for(int i=0;i<_columnes;i++){
+        _mat[i][0]=(_mat[i][0]/(m.maxy-m.miny))*(TAMANY_VERT-1);
+        _mat[i][1]=(_mat[i][1]/(m.maxx-m.minx))*(TAMANY_HORIT-1);
+    }*/
+    static const float CONST_MULT_Y=(TAMANY_VERT-1)/4, CONST_MULT_X=(TAMANY_HORIT-1)/4;
+    for(int i=0;i<_columnes;i++){
+        _mat[i][0]*=CONST_MULT_Y;
+        _mat[i][1]*=CONST_MULT_X;
     }
 }
 
+const int maxim_model_xy=2;
+/*
+void matriu::preparar_matriu2(){ //aixo no és manera de fer les coses, només un apanyo temporal per veure algun resultat. No hauriem de modificar la matriu si no tractar les dades al escriure al fb
+    for(int i=0;i<_columnes;i++){
+        _mat[i][0]+=maxim_model_xy;
+        _mat[i][0]=(_mat[i][0]/(maxim_model_xy*2))*TAMANY_VERT;
+        _mat[i][1]+=maxim_model_xy;
+        _mat[i][1]=(_mat[i][1]/(maxim_model_xy*2))*TAMANY_HORIT;
+    }
+}
+*/
 void matriu::escriure_fb(char fb[][(int)TAMANY_VERT]){
     for(int i=0;i<_columnes;i++){ //per cada punt...
         //debuk
@@ -345,7 +368,7 @@ void matriu::escriure_fb(char fb[][(int)TAMANY_VERT]){
     }
     return *this;
 }*/ //useless perquè per moure una matriu l'objecte ha de ser un lvalue i per obtenir l'lvalue hem de fer una copia, que fa que aixo perdi tot el sentit
-//res.moure(res.producte_escalar(1/A)); //f*** els return values son rvalues
+//res.moure(res.producte(1/A)); //f*** els return values son rvalues
 
 /*matriu& matriu::operator=(const matriu &b){
     if(this!=&b){
