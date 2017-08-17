@@ -11,7 +11,6 @@ matriu::matriu(int files, int columnes, float *arr){
     _files=files; _columnes=columnes;
     _mat=new float*[_columnes];
 
-    //debuk
     //if(_files>10 or _columnes>10)
         //cout<<"WTF dude"<<endl;
 
@@ -34,6 +33,8 @@ matriu::~matriu(){
 
 matriu::matriu(const matriu &b){
     //matriu(b._files,b._columnes); //nope? fa crash
+	//!Quan arribem aqui la matriu actual (this) conté garbage SEMPRE (oi? perquè apart dels returns es crida en alguna altre ocasió el constructor de copia?)
+	_mat=NULL;
 	copia(b);
     //cout<<"Copia: "<<this<<" "<<_files<<" x "<<_columnes<<endl;
 }
@@ -55,6 +56,33 @@ void matriu::emplenar(float arr[]){ //NO CHECKS! THAT'S NOT SAFE!
             _mat[j][i]=arr[pos++];
         }
     }
+}
+
+void matriu::copia(const matriu& b){
+    //crec que hi continua haguent un memory leak important aqui:
+    //si els punters de la matriu "a" es sobreescriuen el destructor no els podra netejar //Fixed?
+    if(_mat==NULL or _files!=b._files or _columnes!=b._columnes){ //si la matriu no té prou memoria hem de fer delete i tornar a demanar-ne
+        if(_mat!=NULL){ //si la matriu conté dades, les borrem
+            for(int i=0;i<_columnes;i++) //com que no podem crida el destructor explicitament hem de copiar el codi... (enserio c++?)
+                delete []_mat[i];
+            delete []_mat;
+        }
+
+        _files=b._files; _columnes=b._columnes;
+        _mat=new float*[b._columnes];
+        for(int i=0;i<b._columnes;i++)
+            _mat[i]=new float[b._files];
+    }
+    //Intent d'aprofitar les matrius més grosses: RIP, aixo crea un memory leak dels guapos, hem d'afegir atributs (_files_reals i _cols_reals) o només acceptar les matrius que siguin ja del mateix tamany
+    //si no, no alliberem tota la memoria ja que limitem la mida de l'array inicial que pot contenir més punters a les files de la matriu més grossa
+    //Si volguessim apurar molt podriem acceptar matrius que tinguessin més files que la nostra i aquestes s'alliberarien igualment.
+    //El que no podem fer MAI és dir que tenim menys columnes de les que realment tenim.
+
+	for(int i=0; i<_files;i++){
+		for(int j=0;j<_columnes;j++){
+			_mat[j][i]=b._mat[j][i];
+		}
+	}
 }
 
 void matriu::mostrar(){
@@ -210,20 +238,6 @@ float matriu::determinant_r(){ //sense optimitzacio. possibilitats: buscar files
         delete []temp_arr;
     }
     return res;
-}
-
-void matriu::copia(const matriu& b){
-	_files=b._files; _columnes=b._columnes;
-	_mat=new float*[_columnes];
-	for(int i=0;i<_columnes;i++){
-		_mat[i]=new float[_files];
-	} //hem de fer delete de lu vell? memory leak?
-
-	for(int i=0; i<_files;i++){
-		for(int j=0;j<_columnes;j++){
-			_mat[j][i]=b._mat[j][i];
-		}
-	}
 }
 
 min_max_xy matriu::minmaxxy(){ //això no és una operació propia d'una matriu...
